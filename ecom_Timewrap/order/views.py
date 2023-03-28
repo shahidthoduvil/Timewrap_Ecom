@@ -97,32 +97,41 @@ def invoice(request,order_id):
 
 
 def refund(request):
+
+
     return render(request,"user_side/refund.html")
 
 def cancel_order(request, item_id=None, order_id=None):
+    try:
         
-    client = razorpay.Client(auth=(settings.KEY, settings.SECRET))
+        client = razorpay.Client(auth=(settings.KEY, settings.SECRET))
 
-    order = Order.objects.get(user=request.user, order_id=order_id)
+        order = Order.objects.get(user=request.user, order_id=order_id)
 
-    payment_id = order.payment.transaction_id
+        payment_id = order.payment.transaction_id
 
-    item = OrderItem.objects.get(order=order, id=item_id)
+        item = OrderItem.objects.get(order=order, id=item_id)
 
-    item_amount = item.item_total * 100
+        item_amount = item.item_total * 100
 
 
-    refund = client.payment.refund(payment_id,{'amount':item_amount})
+        refund = client.payment.refund(payment_id,{'amount':item_amount})
 
-    if refund is not None:
+        if refund is not None:
 
-        item.order_status = 'Refunded'
+            item.order_status = 'Refunded'
 
-        item.save()
+            item.save()
         
 
-        return render(request,"user_side/refund.html",{'order_id':order_id})
+            return render(request,"user_side/refund.html",{'order_id':order_id})
     
-    else:
+        else:
 
-        return HttpResponse('Payment Not Captured')
+            return HttpResponse('Payment Not Captured')
+    
+    except :
+
+        messages.error(request, 'Oops!Something gone wrong')
+        
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

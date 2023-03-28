@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from.models import Order,OrderItem
 from product.models import Coupon
 from django.contrib import messages
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 
 def orderlist(request):
@@ -63,3 +65,50 @@ def delete_coupon(request):
    
 
 
+def order_items(request, id):
+
+    try:
+
+        order = Order.objects.get(id=id)
+
+        order_items = OrderItem.objects.filter(order=order).order_by('id')
+        
+
+        print(order_items)
+
+
+        return render(request,'admin/order_items.html', {'order_items' : order_items})
+    
+    
+    except:
+
+        messages.error(request, 'Oops!Something gone wrong')
+
+        return redirect(orderlist)
+    
+
+
+def status_update(request, id):
+
+    try:
+
+        order_item = OrderItem.objects.get(id=id, user=request.user)
+
+        if request.method == 'POST':
+
+            status = request.POST['status']
+
+            order_item.order_status = status
+
+            order_item.save()
+
+            messages.success(request, 'Status updated successfully')
+
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        
+
+    except OrderItem.DoesNotExist:
+
+        messages.error(request, 'Oops!Something gone wrong')
+        
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

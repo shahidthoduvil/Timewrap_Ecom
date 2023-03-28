@@ -41,6 +41,7 @@ class OrderItem(models.Model):
         ('Refunded', 'Refunded')
     )
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True, blank=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     variant = models.CharField(max_length=100, null=True,blank=True)
     order_status = models.CharField(max_length=20, choices=STATUS, default='Ordered')
@@ -49,4 +50,4 @@ class OrderItem(models.Model):
     item_total = models.PositiveIntegerField()
 
     def __str__(self):
-        return self.product.product_name
+        return self.product.title

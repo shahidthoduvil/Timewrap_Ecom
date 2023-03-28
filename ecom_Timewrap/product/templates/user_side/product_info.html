@@ -91,7 +91,7 @@
                     {% else %}
                     <a type="submit" href="{% url 'add_cart' single_product.id %}?variant={{selected_variant}}"
                         class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
-                    <a  href ="{% url 'checkout' %}" type="submit" class="btn btn-primary px-3 m-3"></i> BUY NOW</a>
+                
                     <a href="{% url 'add_wishlist' single_product.id %}" class="btn btn-primary px-3 m-3"></i>
                         wishlist</a>
                     {% endif %}
@@ -99,8 +99,8 @@
 
         </div> 
 
-
     </div>
+
     <div class="row px-xl-5">
         <div class="col">
             <div class="nav nav-tabs justify-content-center border-secondary mb-4">

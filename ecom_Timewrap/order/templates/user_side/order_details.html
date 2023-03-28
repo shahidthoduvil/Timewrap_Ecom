@@ -231,7 +231,7 @@
                                                 href="{% url 'order_tracking' item.id %}">Track Order</a>
 
                                                 {% if item.order_status == 'Cancelled' or item.order_status == 'Refunded' %}
-                                                <a class="btn btn-sm btn-secondary text-light rounded-pill py-2">Cancelled Order</a>
+                                                <a  href="" class="btn btn-sm btn-secondary text-light rounded-pill py-2">refunded</a>
                                                 {% else %}
                                                 <a  href="{% url 'cancel_order' item.id item.order.order_id %}" class="btn btn-sm btn-dark rounded-pill">Cancel Order<i class="fa-solid fa-ban m-l-5"></i></a>
                                                 {% endif %}

@@ -18,6 +18,8 @@ urlpatterns = [
     path('adm/coupon',views2.coupon_list,name="coupon"),
     path('adm/add_coupon',views2.add_coupon,name="add_coupon"),
     path('adm/delete_coupon',views2.delete_coupon,name="delete_coupon"),
+    path('ordered-items/<int:id>/', views2.order_items,name="order_items"),
+    path('status-update/<int:id>/', views2.status_update,name="status_update"),
 
     
 
