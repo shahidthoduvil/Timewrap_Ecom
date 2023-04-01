@@ -55,7 +55,12 @@
         <td class="text-center">
           <div style="width: 100px"
             class="card-header category-image position overflow-hidden bg-transparent border p-0">
+            {% if p.image %}
             <img class="img-fluid w-100" src="{{p.image.url}}" alt="">
+             {% else %}
+             No Image Available
+            {% endif %}
+           
           </div>
         </td>
 
@@ -91,6 +96,11 @@
           <form action="{% url 'product_edit'  p.id %}" enctype="multipart/form-data" class="mx-1 mx-md-4"
             method="post">
             {% csrf_token %}
+            {% for m in messages %}
+          <div id="message" class="alert alert-info" role="alert">
+                {{m}}
+          </div>
+            {% endfor %}
             <div class="row">
               <div class="mb-3 col-md-6">
                 <label for="exampleFormControlInput1" class="form-label fw-bold">Product Name</label>

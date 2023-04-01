@@ -80,6 +80,7 @@ TEMPLATES = [
                 'product.views.brand',
                 'product.views.material',
                 'product.views.color',
+                'admin_home.context_processor.revenue',
                 
             ],
         },
@@ -158,7 +159,7 @@ MESSAGE_TAGS={
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
- 
+LOGIN_URL = 'login'
 EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend' 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587

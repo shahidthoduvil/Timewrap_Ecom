@@ -5,11 +5,16 @@ from django.contrib import messages,auth
 from user.models import Account
 from product.models import Product,Coupon,Category
 from order.models import Order,OrderItem
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import user_passes_test
+
+from admin_product.views import superadmin_check
+from django.urls import resolve
+
 
 
 # Create your views here.
-
-
+@user_passes_test(superadmin_check)
 def admin_home(request):
   
     user = Account.objects.all().count()
@@ -32,15 +37,12 @@ def admin_home(request):
         'product': product,
         'coupon': coupon,
         'order': order,
-
-        
-
     }
     return render(request,'admin_side/admin_home.html',context)
 
 
 def admin_login(request):
-   
+
     if request.method=='POST':
         email=request.POST['email']
         u_password=request.POST['password']
@@ -66,3 +68,6 @@ def admin_login(request):
 def admin_logout(request):
     auth.logout(request)
     return redirect(admin_login)
+
+
+

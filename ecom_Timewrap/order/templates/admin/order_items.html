@@ -102,6 +102,12 @@
                                                 class="mx-1 mx-md-4"
                                                 method="POST">
                                                 {% csrf_token %}
+                                                {% for message in messages %}
+                                                <div class="alert alert-danger" role="alert">
+                                                  {{message}}
+                                                 
+                                                </div>
+                                                {% endfor %}
 
                                                 <!-- CAtegory-->
                                                 <div class="mb-3">

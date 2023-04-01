@@ -15,6 +15,8 @@ class Payment(models.Model):
     payment_method = models.CharField(max_length=30, default='RazorPay')
     is_paid = models.BooleanField(default=True)
     paid_date = models.DateTimeField(auto_now_add=True)
+    discount=models.PositiveIntegerField(default=0)
+
 
     def __str__(self) -> str:
         return self.transaction_id
@@ -35,7 +37,6 @@ class OrderItem(models.Model):
     STATUS = (
         ('Ordered', 'Ordered'),
         ('Shipped', 'Shipped'),
-        ('Out for delivery', 'Out for delivery'),
         ('Delivered', 'Delivered'),
         ('Cancelled', 'Cancelled'),
         ('Refunded', 'Refunded')
@@ -51,3 +52,17 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return self.product.title
+    
+
+
+
+class   ReviewRating(models.Model):
+    user = models.ForeignKey(Account,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    review = models.TextField(blank=True, null=True)
+    rating = models.FloatField()
+    status = models.BooleanField(default=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    def str(self):
+        return self.review

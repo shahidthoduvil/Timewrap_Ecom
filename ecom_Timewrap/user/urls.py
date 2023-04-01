@@ -14,19 +14,8 @@ path('logout/',views.logout,name="logout"),
 
 path('activate/<uidb64>/<token>/',views.activate,name="activate"),
 
-
-
-
 path('otp_login/',views.otp_login,name="otp"),
-
 path('otp_email/',views.otp_email,name="email"),
-
-
-
-
-
-
-
 
 path('reset-password/',views.reset_password,name="reset_password"),
 path('confirm-password/',views.confirm_password,name="confirm_password"),
@@ -40,12 +29,6 @@ path('add_address/',views.add_address,name="add_address"),
 path('address_delete/<int:id>/',views.address_delete,name="address_delete"),
 path('edit_address/<int:id>/',views.edit_address,name="edit_address"),
 path('dp_edit/',views.dp_edit,name="dp_edit"),
-
-
-
-
-
-
 
 #................................................. admin side urls..........................................................
 

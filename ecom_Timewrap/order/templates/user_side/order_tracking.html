@@ -12,6 +12,12 @@
 
 <section class="vh-100 gradient-custom-2 m-t-85">
     <div class="container py-5 h-100">
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">
+          {{message}}
+
+           </div>
+          {% endfor %}
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-md-10 col-lg-8 col-xl-6">
                 <div class="card card-stepper mt-2" style="border-radius: 16px;">
@@ -69,6 +75,7 @@
                             <li class="step0 active text-center" id="step2"><span>SHIPPED</span></li>
                             <li class="step0 active text-end" id="step3"><spanstyle="margin-right: 22px;">DELIVERED</span></li>
                             {% endif %}
+                            
 
                         </ul>
                         <!-- ========= order status end ============== -->

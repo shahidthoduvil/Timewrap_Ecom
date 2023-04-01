@@ -2,6 +2,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Account,Address
 
+
+# .................................admin_side views.................................
 def user_list(request):
     user_dict={
         'user_list':Account.objects.all().order_by('id')

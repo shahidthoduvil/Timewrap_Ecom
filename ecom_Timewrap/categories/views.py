@@ -1,5 +1,6 @@
 from django.shortcuts import render,redirect
 from product.models import Category
+from django.contrib import messages
 
 # Create your views here.
 
@@ -13,6 +14,11 @@ def category_edit(request,id):
 
     cat_name = request.POST['category_name']
     slug = request.POST['slug']
+       
+    if not cat_name or cat_name.isspace():
+            messages.error(request, "category name cannot be empty or contain only spaces.")
+            return redirect(category)
+    
     cat_update = Category.objects.filter(id=id)
 
     cat_update.update(category_name=cat_name,slug=slug)
@@ -26,6 +32,10 @@ def category_add(request):
 
         name = request.POST['cat_name']
         slug = request.POST['slug']
+
+        if not name or name.isspace():
+            messages.error(request, "category name cannot be empty or contain only spaces.")
+            return redirect(category)
 
         cat_add = Category.objects.create(category_name=name,slug=slug)
         cat_add.save()

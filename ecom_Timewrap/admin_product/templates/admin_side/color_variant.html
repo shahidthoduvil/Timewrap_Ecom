@@ -4,15 +4,12 @@
 
 {% block content %}
 
-{% for m in messages %}
-<div id="message" class="alert alert-info" role="alert">
-    {{m}}
-</div>
-{% endfor %}
+
 <main id="main" class="main">
 
     <div class="pagetitle">
         <h1>Variants</h1>
+
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="">Home</a></li>
@@ -115,6 +112,13 @@
                                                     <div class="modal-body">
                                                         <form action="{% url 'variant_edit' v.id %}" enctype="multipart/form-data" method="POST">
                                                             {% csrf_token %}
+
+
+                                                            {% for m in messages %}
+                                                            <div id="message" class="alert alert-info" role="alert">
+                                                                {{m}}
+                                                            </div>
+                                                            {% endfor %}
                         
                                                             <div class="d-flex flex-row align-items-center mb-3 col-md-12">
                                                                 <div class="form-outline flex-fill mb-0">
@@ -172,6 +176,12 @@
                             <div class="modal-body">
                                 <form action="{% url 'variant_add' %}" enctype="multipart/form-data" method="POST">
                                     {% csrf_token %}
+
+                                    {% for m in messages %}
+                                    <div id="message" class="alert alert-info" role="alert">
+                                        {{m}}
+                                    </div>
+                                    {% endfor %}
 
                                     <div class="form-outline mb-4">
                                         <select class="form-select" aria-label="Default select example" name="product" required>

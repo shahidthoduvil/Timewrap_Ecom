@@ -154,7 +154,7 @@
                 </form>
             </div>
             <div class="col-lg-3 col-6 text-right">
-                <a href="" class="btn border">
+                <a href="{% url 'wishlist' %}" class="btn border">
                     <i class="fas fa-heart text-black"></i>
                     <span class="badge"></span>
                 </a>
@@ -207,16 +207,24 @@
                         </div>
                     </div>
                     <div class="nav-item dropdown ml-auto py-0 btn border-black" style="font-size; color:black">
-                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><i
-                                style="font-size:;color:black" class="fa fa-user"></i>
+                        {% if user.is_authenticated %}
+                        
+                           
+                                
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><img src="{{user.pic.url}}" alt="" class="rounded-circle" width:"30vw" height="30vh">
                         </a>
+                        {% else %}
+                     
+                        <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown"><i style='font-size:24px' class='fas'>&#xf406;</i>
+                        </a>
+                        {% endif %}
                         <div class="dropdown-menu rounded-0 m-0">
-                            {% if user.id is None %}
-                            <a href="" class="dropdown-item">signup</a>
-                            <a href="" class="dropdown-item">login</a>
+                            {% if user.id is none  %}
+                            <a href="{% url 'sign_up' %}" class="dropdown-item">signup</a>
+                            <a href="{% url 'login' %}" class="dropdown-item">login</a>
                             {% else %}
-                            <a href="" class="dropdown-item">logout</a>
-                            <a href="" class="dropdown-item">profile</a>
+                            <a href="{% url 'logout' %}" class="dropdown-item">logout</a>
+                            <a href="{% url 'profile' %}" class="dropdown-item">profile</a>
                             {% endif %}
                         </div>
                     </div>

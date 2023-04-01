@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.datastructures import MultiValueDictKeyError
 import razorpay
 from django.conf import settings
+from order.models import ReviewRating
 
 from django.contrib import messages
 
@@ -54,6 +55,7 @@ def cart_summary(request):
         
         cart.coupon = coupon_obj[0]
         cart.save()
+    
         messages.success(request, 'Coupon Applied')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         
@@ -65,7 +67,6 @@ def cart_summary(request):
 
 
 
-
 @login_required(login_url='login')
 def add_cart(request,product_id):
     product_variant = None
@@ -74,40 +75,46 @@ def add_cart(request,product_id):
         color = Color.objects.get(color_name=variation)
         product = Product.objects.get(id=product_id)
 
-        user = request.user
-
-        if color:
-            product_variant = Variation.objects.get(product=product, color=color)
+   
+        user=request.user
 
       
-        cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
+        if color:
+                product_variant = Variation.objects.get(product=product, color=color)
+                cart, _ = Cart.objects.get_or_create(user=user, is_paid=False)
        
 
-        is_cart_item = CartItem.objects.filter(
-            cart=cart, product=product, variant=product_variant).exists()
-        
-        
+                is_cart_item = CartItem.objects.filter(
+                cart=cart, product=product, variant=product_variant).exists()
+
+      
+       
 
         if is_cart_item:
-            cart_item = CartItem.objects.get(
-            cart=cart, product=product, variant=product_variant)
-            if cart_item.quantity >= product.stock:
+                cart_item = CartItem.objects.get(
+                cart=cart, product=product, variant=product_variant)
+                if cart_item.quantity >= product.stock:
 
-                messages.warning(request, "Sorry, the product is out of stock.")
-                
+                    messages.warning(request, "Sorry, the product is out of stock.")
+                    
+                    return redirect(cart_summary)
+                cart_item.quantity += 1
+                cart_item.save()
                 return redirect(cart_summary)
-            cart_item.quantity += 1
-            cart_item.save()
 
+    
         else:
-            cart_item = CartItem.objects.create(
-                product=product, quantity=1, cart=cart, variant=product_variant)
-            cart_item.save()
+                cart_item = CartItem.objects.create(
+                    product=product, quantity=1, cart=cart, variant=product_variant)
+                cart_item.save()
+                return redirect(cart_summary)
 
     except:
         pass
-    
+
     return redirect(cart_summary)
+
+    
 
 
 
@@ -193,6 +200,7 @@ def product_info(request,product_slug):
        
         single_product=Product.objects.get(slug=product_slug)
         variants = Variation.objects.filter(product=single_product)
+        review=ReviewRating.objects.filter(product=single_product)
 
         mult=MultipleImg.objects.filter(product = single_product)
         products=Product.objects.filter(is_available=True).order_by('id')
@@ -203,7 +211,8 @@ def product_info(request,product_slug):
     context={'single_product':single_product,
              'mult':mult,
              'products':products,
-             'variants': variants
+             'variants': variants,
+             'review':review,
     }
     if request.GET.get('variant'):
             color = request.GET.get('variant')
@@ -215,6 +224,7 @@ def product_info(request,product_slug):
                 'selected_variant': variant,
                 'variant_price': variant_price,
                 'color' : color,
+                
               
                 })
 
@@ -326,27 +336,28 @@ def brand(request):
 
 
 
-#
-
 
 
 
 def search(request):
-    # return HttpResponse('welcome to the store')
     if 'keyword' in request.GET:
-        keyword=request.GET['keyword']
+        keyword = request.GET['keyword']
+        products = Product.objects.none()  # define an empty queryset
         if keyword:
-            products=Product.objects.order_by('-created_date').filter(Q(title__icontains=keyword) | Q(description__icontains=keyword))
-            product_count=products.count()
-    context={
+            products = Product.objects.order_by('-created_date').filter(
+                Q(title__icontains=keyword) | Q(description__icontains=keyword)
+            )
+        product_count = products.count()
+    else:
+        products = Product.objects.none()
+        product_count = 0
+
+    context = {
         'products': products,
-        'product_count':product_count,
-        }
-        
+        'product_count': product_count,
+    }
 
-    return render(request,"user_side/store.html",context)
-
-
+    return render(request, "user_side/store.html", context)
 
 
 
@@ -362,37 +373,38 @@ def banner_view(request):
 
     return render(request,'user_side/home.html',context)
 
-
+@login_required(login_url='login')
 def checkout(request):
-    
     current_user = request.user
     addresses = Address.objects.filter(user=current_user).order_by('id')
-    coupon=Coupon.objects.all()
+    coupon = Coupon.objects.all()
+
+    payment = None
+    cart=None
+    cart_items=None
+    # coupon  # define payment before the try block
 
     try:
         cart = Cart.objects.get(user=current_user, is_paid=False)
         cart_items = CartItem.objects.filter(cart=cart)
-        client = razorpay.Client(auth = (settings.KEY, settings.SECRET))
-        payment = client.order.create({'amount' : int(cart.get_grand_total()) * 100, 'currency' : 'INR', 'payment_capture': 1})
+        client = razorpay.Client(auth=(settings.KEY, settings.SECRET))
+        payment = client.order.create({'amount': int(cart.get_grand_total()) * 100, 'currency': 'INR', 'payment_capture': 1})
     except:
-        pass #Just Ignore 
-    
-    cart.razor_pay_order_id=payment['id']
-    cart.save()
-    
-    context = {'cart': cart,
-               'cart_items': cart_items,
-               'address': addresses,
-               'payment' : payment,
-               'coupon':coupon,
-               
-               }
+        pass
 
+    if payment is not None:  # check if payment is not None before using it
+        cart.razor_pay_order_id = payment['id']
+        cart.save()
 
+    context = {
+        'cart': cart,
+        'cart_items': cart_items,
+        'address': addresses,
+        'payment': payment,
+        'coupon': coupon,
+    }
 
-    return render(request,"user_side/checkout.html",context)
-
-
+    return render(request, "user_side/checkout.html", context)
 
     
 

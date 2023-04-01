@@ -17,6 +17,7 @@ from .models import Account,Address
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from product.models import Cart,CartItem
+from home.views import home
 
 from .form import AddressForm
 
@@ -27,7 +28,7 @@ from .form import AddressForm
 # Create your views here.
 
 
-#................................................. user  side urls..........................................................
+#................................................. user  side views..........................................................
 
 def sign_up(request):
         
@@ -94,7 +95,8 @@ def activate(request, uidb64, token):
 
    
 def login(request):
-    
+    if request.user.is_authenticated:
+        return redirect(home)
     if request.method=='POST':
         email=request.POST['email']
         password=request.POST['password']
@@ -104,10 +106,10 @@ def login(request):
 
         if user is not None:
             auth.login(request,user)
-            return redirect('home')
+            return redirect(home)
         else:
             messages.error(request,'invalid login credentials')
-            return redirect('login')
+            return redirect(login)
          
     return render(request,"user_side/login.html")
 
@@ -174,22 +176,7 @@ def logout(request):
 
 
 
-def reset_validation(request,uidb64,token):
-    try:
-        uid = urlsafe_base64_decode(uidb64).decode()
-        user = Account._default_manager.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
-        user = None
 
-    if user is not None and default_token_generator.check_token(user, token):
-        request.session['uid']= 'uid'
-        messages.success(request, 'please reset your password')
-        return redirect('confirm_password')
-    else:
-        messages.error(request, 'link has been expired!')
-     
-   
-        return redirect('login')
   
 
 
@@ -218,6 +205,23 @@ def reset_password(request):
             return redirect(reset_password)
          
     return render(request, "user_side/reset_password.html")
+    
+def reset_validation(request,uidb64,token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session['uid']= uid
+        messages.success(request, 'please reset your password')
+        return redirect('confirm_password')
+    else:
+        messages.error(request, 'link has been expired!')
+     
+   
+        return redirect('login')
 
 
 

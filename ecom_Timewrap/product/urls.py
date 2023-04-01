@@ -41,7 +41,8 @@ urlpatterns = [
     path('default-address/<int:id>', views.default_address, name="default_address"),
    path('products/', views.store,name="price_sorting"),
     path('sort/', views.store,name="sorting"),
- 
+
+  
 
 
 

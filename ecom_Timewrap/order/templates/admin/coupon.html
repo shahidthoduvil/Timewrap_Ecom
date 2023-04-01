@@ -49,12 +49,21 @@
                                         <td>₹ {{coupon.discount_price}}</td>
                                         <td> ₹ {{coupon.min_amount}}</td>
 
-                                        {% if coupon.status %}
-                                        <td><span class="badge bg-success">Active</span></td>
-                                        {% else %}
-                                        <td><span class="badge bg-primary">In-active</span></td>
-                                        {% endif %}
-
+                                        <td class="text-center">
+                                            <a href="{% url 'coupon_status' coupon.id %}">
+                                                {% if c.is_expired %}
+                                                <i class="fa-solid fa-unlock fa-lg text-success ms-3"></i>
+                                                {% else %}
+                                                <i class="fa-solid fa-lock fa-lg text-danger ms-3"></i>
+                                                {% endif %}
+                                            </a>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            {% if coupon.is_expired %}
+                                            <span class="badge bg-success">Expired</span>
+                                            {% else %}
+                                            <span class="badge bg-primary">Active</span>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <!-- Button trigger modal -->
                                             <a type="button" class="fs-4 text-danger" data-bs-toggle="modal"
@@ -82,6 +91,12 @@
                                                         <div class="modal-footer">
                                                             <form action="{% url 'delete_coupon'  %}" method="POST">
                                                                 {% csrf_token %}
+                                                                {% for message in messages %}
+                                                                <div class="alert alert-danger" role="alert">
+                                                                  {{message}}
+                                                                 
+                                                                </div>
+                                                                {% endfor %}
                                                                 <input name='coupon_id' type="hidden"
                                                                     value="{{coupon.id}}" id="form3Example3cg"
                                                                     class="form-control form-control-lg" />

@@ -15,3 +15,6 @@ class OrderAdmin(admin.ModelAdmin):
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display= ( 'product', 'order', 'quantity', 'order_status')
+
+
+admin.site.register(ReviewRating)

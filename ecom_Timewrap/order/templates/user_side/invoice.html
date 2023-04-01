@@ -14,7 +14,7 @@
 
             <div class="card border border-dark">
                 <div class="text-center logo-q1 p-2 px-5">
-                    <img src="" width="150">
+                    <img src="{% static 'img/timewraplogi.png' %}" width="250">
 
                 </div>
 
@@ -141,10 +141,25 @@
                                 <tbody class="totals">
 
                                     <tr class="text-dark">
+
                                         <td>
                                             <div class="text-left">
 
-                                                <span>Subtotal</span>
+                                                <span>Discount price</span>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="text-right">
+                                                <span>₹  {{order.payment.discount}}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                        <tr class="text-dark">
+                                        <td>
+                                            <div class="text-left">
+
+                                                <span>Discounted total</span>
 
                                             </div>
                                         </td>
@@ -182,6 +197,7 @@
                                             </div>
                                         </td>
                                     </tr>
+                                  
 
 
 
@@ -189,13 +205,13 @@
                                         <td>
                                             <div class="text-left">
 
-                                                <span class="font-weight-bold">Subtotal</span>
+                                                <span class="font-weight-bold">Grandtotal</span>
 
                                             </div>
                                         </td>
                                         <td>
                                             <div class="text-right text-danger">
-                                                <span class="font-weight-bold">₹{{order.payment.grand_total}}.00</span>
+                                                <span class="font-weight-bold">₹{{order.payment.grand_total}}.00 </span>
                                             </div>
                                         </td>
                                     </tr>
@@ -213,10 +229,6 @@
 
                     <p class="font-weight-bold mb-0">Thanks for shopping with us!</p>
                     <span>TIMEWRAP</span>
-
-
-
-
 
                 </div>
 
