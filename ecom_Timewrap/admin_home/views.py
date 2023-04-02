@@ -103,38 +103,5 @@ def admin_logout(request):
 
 
 
-@user_passes_test(superadmin_check)
-def admin_panel(request):
-    sales = OrderItem.objects.all().count()
-    users = Account.objects.all().count()
-
-    # Graph setting    
-    # Getting the current date
-    today = datetime.today()
-    date_range = 7
-
-    # Get the date 7 days ago
-    four_days_ago = today - timedelta(days=date_range)
-    print("======================================================")
-
-    #filter orders based on the date range
-    payments = Payment.objects.filter(paid_date__gte=four_days_ago, paid_date__lte=today) 
-    
-
-    # Getting the sales amount per day
-
-    sales_by_day = payments.annotate(day=TruncDay('paid_date')).values('day').annotate(total_sales=Sum('grand_total')).order_by('-day')
-
-    # Getting the dates which sales happpened
-
-    sales_dates = Payment.objects.annotate(sale_date=Cast('paid_date', output_field=DateField())).values('sale_date').distinct()
-    
-    context = {
-        'sales' : sales,
-        'users' : users,
-        'sales_by_day' : sales_by_day,
-        'sales_dates' :sales_dates,
-    }
-    return render(request, 'admin_side/admin_home.html',context)
 
 
